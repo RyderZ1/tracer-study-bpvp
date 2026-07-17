@@ -1,0 +1,47 @@
+# ============================================================
+# .dockerignore — Mencegah file berat/sensitif ikut ter-build
+# ============================================================
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# IDE & Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Dependensi (akan di-install ulang di dalam Docker)
+/vendor
+/node_modules
+
+# Environment (sensitif, diatur via Railway Variables)
+.env
+.env.backup
+.env.production
+
+# Storage yang tidak diperlukan di image
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/logs/.gitkeep
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+
+# File development
+/tests
+phpunit.xml
+.editorconfig
+.npmrc
+
+# Docker files sendiri (hindari copy rekursif)
+Dockerfile
+docker-compose*.yml
+
+# OS generated
+.DS_Store
+Thumbs.db
