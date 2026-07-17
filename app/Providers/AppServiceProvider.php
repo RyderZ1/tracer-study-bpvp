@@ -19,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Paksa penggunaan HTTPS jika aplikasi berjalan di production (Railway)
+        // Ini mencegah error "Mixed Content" di mana CSS/JS gagal dimuat karena memakai http://
+        if (config('app.env') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Membagikan data resetRequests ke layout utama aplikasi agar bisa diakses di header/navbar semua halaman
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
             // Hanya query database jika user sudah login (hindari crash di halaman login)
