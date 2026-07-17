@@ -21,10 +21,21 @@ class AppServiceProvider extends ServiceProvider
     {
         // Membagikan data resetRequests ke layout utama aplikasi agar bisa diakses di header/navbar semua halaman
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
-            $resetRequests = \App\Models\User::where('is_requesting_reset', true)
-                ->orderBy('updated_at', 'desc')
-                ->get(['id', 'username_nik', 'nama_lengkap']);
-            
+            // Hanya query database jika user sudah login (hindari crash di halaman login)
+            // dan bungkus dengan try-catch agar tidak menghancurkan seluruh halaman jika DB belum siap
+            $resetRequests = collect(); // default: collection kosong
+
+            try {
+                if (\Illuminate\Support\Facades\Auth::check()) {
+                    $resetRequests = \App\Models\User::where('is_requesting_reset', true)
+                        ->orderBy('updated_at', 'desc')
+                        ->get(['id', 'username_nik', 'nama_lengkap']);
+                }
+            } catch (\Exception $e) {
+                // Jika database belum siap, gagal secara diam-diam
+                // dan biarkan halaman tetap tampil
+            }
+
             $view->with('resetRequests', $resetRequests);
         });
     }

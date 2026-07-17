@@ -104,8 +104,18 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# ------- Hak Akses -------
+# ------- Hak Akses (Kritis untuk PHP-FPM www-data) -------
 RUN chmod +x /usr/local/bin/entrypoint.sh \
+    # Pastikan semua subdirektori storage ada
+    && mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache/data \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/storage/app/public \
+    && mkdir -p /var/www/html/bootstrap/cache \
+    # Buat file log agar www-data bisa langsung menulis
+    && touch /var/www/html/storage/logs/laravel.log \
+    # Set ownership ke www-data (user PHP-FPM)
     && chown -R www-data:www-data /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage \
