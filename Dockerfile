@@ -111,8 +111,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# ------- Buat direktori log Nginx -------
-RUN mkdir -p /var/log/nginx /run/nginx
+# ------- Buat direktori log Nginx & Supervisor -------
+RUN mkdir -p /var/log/nginx /run/nginx /var/log/supervisor
 
 # ------- Expose Port (Railway akan override via $PORT) -------
 EXPOSE 8080
